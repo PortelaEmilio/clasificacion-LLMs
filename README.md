@@ -1,4 +1,3 @@
-````markdown
 # 🤖 Clasificación Automática con LLMs
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -270,9 +269,3 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 - 🐛 **Issues**: [GitHub Issues](https://github.com/tu-usuario/clasificacion-llms/issues)
 - 📖 **Documentación**: Ver archivos `.md` en el repositorio
 - 💬 **Discusiones**: [GitHub Discussions](https://github.com/tu-usuario/clasificacion-llms/discussions)
-
----
-
-**Desarrollado con ❤️ para la comunidad de ML/AI**
-````</content>
-<parameter name="filePath">/home/emilio/Documentos/Master/TFM/Clasificacion_bio_simple/clasificacion-openai-repo/README.md
