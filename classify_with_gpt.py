@@ -171,67 +171,6 @@ def normalize_categories(category: str, dimension: str) -> str:
     
     return category
 
-def evaluate_performance(df_results: pd.DataFrame) -> Dict:
-    """
-    Evalúa el desempeño comparando las predicciones con las etiquetas correctas
-    """
-    results = {}
-    
-    # Filtrar solo filas con predicciones válidas (sin ERROR)
-    valid_mask = (
-        (df_results['sense_predicted'] != 'ERROR') &
-        (df_results['reference_predicted'] != 'ERROR') &
-        (df_results['attribution_predicted'] != 'ERROR')
-    )
-    
-    df_valid = df_results[valid_mask].copy()
-    
-    print(f"Total de frases: {len(df_results)}")
-    print(f"Predicciones válidas: {len(df_valid)}")
-    print(f"Errores: {len(df_results) - len(df_valid)}")
-    
-    if len(df_valid) == 0:
-        return {"error": "No valid predictions to evaluate"}
-    
-    # Evaluar SENSE
-    sense_accuracy = accuracy_score(df_valid['sense_true'], df_valid['sense_predicted'])
-    results['sense'] = {
-        'accuracy': sense_accuracy,
-        'classification_report': classification_report(df_valid['sense_true'], df_valid['sense_predicted']),
-        'confusion_matrix': confusion_matrix(df_valid['sense_true'], df_valid['sense_predicted']).tolist()
-    }
-    
-    # Evaluar REFERENCE
-    reference_accuracy = accuracy_score(df_valid['reference_true'], df_valid['reference_predicted'])
-    results['reference'] = {
-        'accuracy': reference_accuracy,
-        'classification_report': classification_report(df_valid['reference_true'], df_valid['reference_predicted']),
-        'confusion_matrix': confusion_matrix(df_valid['reference_true'], df_valid['reference_predicted']).tolist()
-    }
-    
-    # Evaluar ATTRIBUTION
-    attribution_accuracy = accuracy_score(df_valid['attribution_true'], df_valid['attribution_predicted'])
-    results['attribution'] = {
-        'accuracy': attribution_accuracy,
-        'classification_report': classification_report(df_valid['attribution_true'], df_valid['attribution_predicted']),
-        'confusion_matrix': confusion_matrix(df_valid['attribution_true'], df_valid['attribution_predicted']).tolist()
-    }
-    
-    # Exactitud general (todas las dimensiones correctas)
-    exact_match_mask = (
-        (df_valid['sense_true'] == df_valid['sense_predicted']) &
-        (df_valid['reference_true'] == df_valid['reference_predicted']) &
-        (df_valid['attribution_true'] == df_valid['attribution_predicted'])
-    )
-    exact_match_accuracy = exact_match_mask.mean()
-    results['exact_match'] = {
-        'accuracy': exact_match_accuracy,
-        'count': exact_match_mask.sum(),
-        'total': len(df_valid)
-    }
-    
-    return results
-
 def main():
     """
     Función principal
@@ -301,46 +240,8 @@ def main():
     elapsed_time = time.time() - start_time
     print(f"\nClasificación completada en {elapsed_time:.2f} segundos")
     
-    # Evaluar desempeño
-    print("\n=== EVALUACIÓN DE DESEMPEÑO ===")
-    performance = evaluate_performance(df_results)
-    
-    if "error" not in performance:
-        print(f"\nACCURACY POR DIMENSIÓN:")
-        print(f"SENSE: {performance['sense']['accuracy']:.3f}")
-        print(f"REFERENCE: {performance['reference']['accuracy']:.3f}")
-        print(f"ATTRIBUTION: {performance['attribution']['accuracy']:.3f}")
-        print(f"EXACT MATCH (todas correctas): {performance['exact_match']['accuracy']:.3f}")
-        
-        print(f"\nREPORTE DETALLADO DE SENSE:")
-        print(performance['sense']['classification_report'])
-        
-        print(f"\nREPORTE DETALLADO DE REFERENCE:")
-        print(performance['reference']['classification_report'])
-        
-        print(f"\nREPORTE DETALLADO DE ATTRIBUTION:")
-        print(performance['attribution']['classification_report'])
-        
-        # Guardar evaluación completa
-        with open("performance_evaluation.json", "w", encoding="utf-8") as f:
-            # Convertir numpy arrays a listas para JSON serializable
-            performance_serializable = {}
-            for key, value in performance.items():
-                if isinstance(value, dict):
-                    performance_serializable[key] = {}
-                    for k, v in value.items():
-                        if isinstance(v, np.ndarray):
-                            performance_serializable[key][k] = v.tolist()
-                        else:
-                            performance_serializable[key][k] = v
-                else:
-                    performance_serializable[key] = value
-            
-            json.dump(performance_serializable, f, indent=2, ensure_ascii=False)
-    
     print("\nArchivos generados:")
     print("- gpt_classification_results.csv: Resultados completos de clasificación")
-    print("- performance_evaluation.json: Evaluación detallada del desempeño")
 
 if __name__ == "__main__":
     main()
