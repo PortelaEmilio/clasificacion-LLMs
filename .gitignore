@@ -1,0 +1,78 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+results/
+backups/
+*.csv
+*.json
+.DS_Store
+
+# Archivos de imágenes de prueba
+images_test/
+images_example/
+fotos_test/
+test_images/
+temp_images/
+
+# API Keys y datos sensibles - CRÍTICO
+.env
+.env.local
+.env.*
+*api_key*
+*API_KEY*
+*api-key*
+*.key
+*.pem
+*.secret
+config.json
+secrets.json
+credentials.json
+
+# Archivos de documentación interna (no para GitHub)
+COMPARISON.md
+CHANGELOG.md
+INDEX.md
+
+# IDEs adicionales
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+
+# Datos personales
+clasificacion_ME_*.csv
+*_ME.csv
+bio*.csv
+test_*.json
+*_results.json
+
+# No ignorar archivos importantes
+!requirements.txt
+!prompt_18.txt
+!README.md
+!QUICKSTART.md
+!ADVANCED_PROMPTS.md

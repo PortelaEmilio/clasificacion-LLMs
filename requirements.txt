@@ -1,0 +1,11 @@
+# Dependencias para clasificación de texto
+pandas>=1.5.0
+openai>=1.0.0
+scikit-learn>=1.2.0
+numpy>=1.23.0
+
+# Dependencias para clasificación de imágenes
+requests>=2.28.0
+Pillow>=9.0.0
+tqdm>=4.64.0
+urllib3>=1.26.0
