@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 Script para clasificar imágenes usando modelos de visión en Ollama
-Basado en OllamaAnalisis_CE.py, adaptado para clasificación general
 """
 
 import requests
@@ -334,23 +333,29 @@ class OllamaImageClassifier:
 
 
 def create_example_prompt() -> str:
-    """Crea un prompt de ejemplo para clasificación de imágenes"""
-    return """Analyze this image and provide a detailed description.
+    """Crea un prompt para análisis de atractivo físico basado en OllamaAnalisis_CE.py"""
+    return """You are a visual evaluator trained to assess human features in images with precision, objectivity, and fairness. Use a continuous scale from 0 to 100 to rate each criterion, not just discrete steps (like 20, 40, etc.). Return nuanced scores that reflect subtle differences. 
+    
+    If no person is clearly visible or evaluable, return "NA".
 
-Please identify:
-1. Main subject or objects in the image
-2. Setting or background
-3. Colors and composition
-4. Any notable features or details
+    Respond only with a number (0–100) or "NA". No additional commentary.
 
-Respond in JSON format with the following structure:
-{
-    "main_subject": "description",
-    "setting": "description",
-    "colors": ["color1", "color2"],
-    "notable_features": ["feature1", "feature2"],
-    "overall_description": "brief summary"
-}"""
+    Analyze the image and determine if a human body is clearly visible, considering possible image rotations.
+    If a body is not clearly visible, return NA.
+
+    Evaluate the body based on these criteria:
+    - Proportional and balanced figure
+    - Visible muscle tone (for males) or curves (for females)
+    - Low body fat
+    - Shows much of the body without clothing covering it (e.g., is in a bathing suit or underwear).
+    - High waist-to-shoulder ratio (for men) or waist-to-hip ratio (for women)
+
+    Rate the overall attractiveness on a continuous scale from 0 to 100, where:
+    0 = very low, 100 = extremely high.
+    You can use any integer value in between. Avoid rounding to common buckets (e.g., 20, 40, 60) unless justified by the image.
+
+    Respond only with a number between 0 and 100, or "NA" if not evaluable. Do not include any other text.
+    If the waist of the person is not clearly visible, return "NA"."""
 
 
 def main():
@@ -390,8 +395,18 @@ def main():
             print(f"💡 Coloca imágenes en este directorio y ejecuta el script nuevamente.")
         return
     
-    # Usar prompt de ejemplo
-    prompt = create_example_prompt()
+    # Usar prompt del repositorio si existe (fallback a create_example_prompt)
+    prompt_path = Path("prompt_capital-erotico.txt")
+    if prompt_path.exists():
+        try:
+            prompt = prompt_path.read_text(encoding='utf-8')
+            print(f"✅ Usando prompt de archivo: {prompt_path}")
+        except Exception as e:
+            print(f"⚠️ No se pudo leer {prompt_path}: {e}. Usando prompt por defecto.")
+            prompt = create_example_prompt()
+    else:
+        print("⚠️ No se encontró 'prompt_capital-erotico.txt' en el repositorio. Usando prompt por defecto.")
+        prompt = create_example_prompt()
     
     # Procesar directorio
     results = classifier.process_directory(
